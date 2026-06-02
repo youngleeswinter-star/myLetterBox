@@ -1,0 +1,49 @@
+@import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;700;900&display=swap');
+
+body {
+  font-family: 'Pretendard', sans-serif;
+  background-color: #f8f9fa;
+  color: #212529;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 화면이 부드럽게 나타나는 애니메이션 */
+.animate-fadeIn {
+  animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 숫자 입력창 우측 화살표 제거 */
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+/* 애플 감성 고급스러운 그림자 효과 */
+.shadow-premium {
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.03),
+    0 2px 8px -1px rgba(0, 0, 0, 0.02);
+}
+.shadow-visual-banner {
+  box-shadow: 0 20px 40px -15px rgba(33, 37, 41, 0.15);
+}
+
+/* 하단 탭 클릭 시 살짝 커지는 효과 */
+.active-tab-scale {
+  transform: scale(1.02);
+  transition: transform 0.2s ease;
+}
