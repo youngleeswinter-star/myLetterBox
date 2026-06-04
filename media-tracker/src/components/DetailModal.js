@@ -8,18 +8,19 @@ export default function DetailModal({ date, data, onSave, onClose }) {
   });
 
   // 검색 관련 상태
-  const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [activeIndex, setActiveIndex] = useState(null); // 현재 검색 중인 아이템 인덱스
   const API_KEY = '4de847a38f096b28a48cd6872369435a';
 
-  const searchMovie = async (q) => {
-    setQuery(q);
-    if (q.length < 2) return;
+ const searchMovie = async (q) => {
+    if (q.length < 2) {
+        setResults([]);
+        return;
+    }
     const res = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${q}&language=ko-KR`);
     const data = await res.json();
     setResults(data.results || []);
-  };
+};
 
   const selectMovie = (movie, index) => {
     const n = [...items];
@@ -54,15 +55,14 @@ export default function DetailModal({ date, data, onSave, onClose }) {
                   <input 
                     className="w-full p-2 mb-1 rounded text-sm font-bold border" 
                     placeholder="영화 제목 검색" 
-                    value={query} // item.title 대신 query 사용 (선택 시에만 item.title 변경)
+                    value={item.title} 
                     onChange={(e) => {
                       const val = e.target.value;
-                      setQuery(val); // 입력값을 query 상태에 저장
                       const n = [...items]; 
-                      n[i].title = val; // 동시에 item.title도 업데이트
+                      n[i].title = val; 
                       setItems(n);
                       setActiveIndex(i); 
-                      searchMovie(val);
+                      searchMovie(val); // 여기서 직접 val 전달
                     }} 
                   />
                   <input className="w-full p-2 rounded text-[10px] text-gray-600 border" placeholder="포스터 URL" value={item.img} onChange={(e) => { const n = [...items]; n[i].img = e.target.value; setItems(n); }} />
