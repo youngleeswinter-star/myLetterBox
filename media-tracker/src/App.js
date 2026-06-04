@@ -83,7 +83,7 @@ export default function App() {
     <div className="w-full h-screen bg-gray-100 flex justify-center">
       <div className="w-full max-w-md h-full bg-white flex flex-col shadow-2xl overflow-hidden">
         <header className="h-14 flex items-center justify-between px-4 border-b bg-white shrink-0">
-          <h1 className="text-lg font-black tracking-tighter">MEDIA TRACKER</h1>
+          <h1 className="text-lg font-black tracking-tighter">MY </h1>
           {activeTab === 'calendar' ? (
             <button className="text-2xl font-bold p-2" onClick={() => {
               const d = new Date();
