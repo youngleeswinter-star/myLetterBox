@@ -51,10 +51,20 @@ export default function DetailModal({ date, data, onSave, onClose }) {
                   {item.img ? <img src={item.img} className="w-full h-full object-cover" alt="" onError={(e) => e.target.style.display = 'none'} /> : <div className="text-[9px] p-1 text-center">No Img</div>}
                 </div>
                 <div className="flex-1">
-                  <input className="w-full p-2 mb-1 rounded text-sm font-bold border" placeholder="영화 제목 검색" value={item.title} onChange={(e) => {
-                    const n = [...items]; n[i].title = e.target.value; setItems(n);
-                    setActiveIndex(i); searchMovie(e.target.value);
-                  }} />
+                  <input 
+                    className="w-full p-2 mb-1 rounded text-sm font-bold border" 
+                    placeholder="영화 제목 검색" 
+                    value={query} // item.title 대신 query 사용 (선택 시에만 item.title 변경)
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setQuery(val); // 입력값을 query 상태에 저장
+                      const n = [...items]; 
+                      n[i].title = val; // 동시에 item.title도 업데이트
+                      setItems(n);
+                      setActiveIndex(i); 
+                      searchMovie(val);
+                    }} 
+                  />
                   <input className="w-full p-2 rounded text-[10px] text-gray-600 border" placeholder="포스터 URL" value={item.img} onChange={(e) => { const n = [...items]; n[i].img = e.target.value; setItems(n); }} />
                 </div>
               </div>
