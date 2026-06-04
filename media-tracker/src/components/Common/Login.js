@@ -35,7 +35,7 @@ export default function Login() {
         </button>
       </div>
 
-      <footer className="absolute bottom-8 text-[9px] uppercase tracking-[0.3em] text-gray-300">
+      <footer className="absolute bottom-8 text-emerald-800 text-[11px] font-medium tracking-[0.2em] uppercase hover:bg-emerald-50 transition-all active:scale-[0.98]">
         © 2026 YOUNGEUN Lee. 
       </footer>
     </div>
