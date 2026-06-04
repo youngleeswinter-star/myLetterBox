@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 export default function DetailModal({ date, data, onSave, onClose }) {
-  const [items, setItems] = useState(data?.items || [{ title: '', img: '' }]);
+  const [items, setItems] = useState(data?.items || [{ title: '', poster_url: '' }]);
   const [targetDate, setTargetDate] = useState(() => {
     const [y, m, d] = date.split('.');
     return `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
@@ -26,7 +26,7 @@ export default function DetailModal({ date, data, onSave, onClose }) {
     const n = [...items];
     n[index] = {
       title: movie.title,
-      img: `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+      poster_url: `https://image.tmdb.org/t/p/w500${movie.poster_path}`
     };
     setItems(n);
     setResults([]); // 검색창 닫기
@@ -50,7 +50,7 @@ export default function DetailModal({ date, data, onSave, onClose }) {
             <div key={i} className="bg-gray-50 p-3 rounded-xl mb-3 border relative">
               <div className="flex gap-3">
                 <div className="w-16 h-24 bg-gray-200 rounded-lg overflow-hidden shrink-0 border">
-                  {item.img ? <img src={item.img} className="w-full h-full object-cover" alt="" onError={(e) => e.target.style.display = 'none'} /> : <div className="text-[9px] p-1 text-center">No Img</div>}
+                  {item.poster_url ? <img src={item.poster_url} className="w-full h-full object-cover" alt="" onError={(e) => e.target.style.display = 'none'} /> : <div className="text-[9px] p-1 text-center">No Img</div>}
                 </div>
                 <div className="flex-1">
                   <input 
@@ -66,7 +66,7 @@ export default function DetailModal({ date, data, onSave, onClose }) {
                       searchMovie(val); // 여기서 직접 val 전달
                     }} 
                   />
-                  <input className="w-full p-2 rounded text-[10px] text-gray-600 border" placeholder="포스터 URL" value={item.img} onChange={(e) => { const n = [...items]; n[i].img = e.target.value; setItems(n); }} />
+                  <input className="w-full p-2 rounded text-[10px] text-gray-600 border" placeholder="포스터 URL" value={item.poster_url} onChange={(e) => { const n = [...items]; n[i].poster_url = e.target.value; setItems(n); }} />
                 </div>
               </div>
               
@@ -84,7 +84,7 @@ export default function DetailModal({ date, data, onSave, onClose }) {
               <div className="flex justify-end mt-2"><button className="text-[10px] text-red-500 font-black px-2 py-1 bg-white border rounded" onClick={() => setItems(items.filter((_, idx) => idx !== i))}>삭제</button></div>
             </div>
           ))}
-          <button className="w-full py-4 bg-blue-500 text-white text-sm font-black rounded-xl" onClick={() => setItems([...items, { title: '', img: '' }])}>+ 영화 추가하기</button>
+          <button className="w-full py-4 bg-blue-500 text-white text-sm font-black rounded-xl" onClick={() => setItems([...items, { title: '', poster_url: '' }])}>+ 영화 추가하기</button>
         </div>
         
         <div className="flex gap-2">

@@ -50,11 +50,11 @@ export default function CalendarView({ logs, onDateClick }) {
               {log.items.length}편
             </div>
             {log.items.length === 1 ? (
-              <img src={log.items[0].img} className="w-full h-full object-cover" alt="" onError={(e) => e.target.style.display = 'none'} />
+              <img src={log.items[0].poster_url} className="w-full h-full object-cover" alt="" onError={(e) => e.target.style.display = 'none'} />
             ) : (
               <>
-                <img src={log.items[0].img} className="w-full h-1/2 object-cover" alt="" onError={(e) => e.target.style.display = 'none'} />
-                <img src={log.items[1].img} className="w-full h-1/2 object-cover" alt="" onError={(e) => e.target.style.display = 'none'} />
+                <img src={log.items[0].poster_url} className="w-full h-1/2 object-cover" alt="" onError={(e) => e.target.style.display = 'none'} />
+                <img src={log.items[1].poster_url} className="w-full h-1/2 object-cover" alt="" onError={(e) => e.target.style.display = 'none'} />
               </>
             )}
           </div>
