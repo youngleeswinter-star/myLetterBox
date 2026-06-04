@@ -29,14 +29,14 @@ export default function Login() {
       <div className="w-full max-w-[240px]">
         <button
           onClick={handleLogin}
-          className="w-full py-4 border border-gray-200 text-gray-900 text-[11px] font-medium tracking-[0.2em] uppercase hover:bg-gray-50 transition-all active:scale-[0.98]"
+          className="w-full py-4 border border-emerald-700 text-emerald-800 text-[11px] font-medium tracking-[0.2em] uppercase hover:bg-emerald-50 transition-all active:scale-[0.98]"
         >
           Google Login
         </button>
       </div>
 
       <footer className="absolute bottom-8 text-[9px] uppercase tracking-[0.3em] text-gray-300">
-        © 2026
+        © 2026 YOUNGEUN Lee. 
       </footer>
     </div>
   );
