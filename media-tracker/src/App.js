@@ -2,19 +2,17 @@ import React, { useState, useEffect } from 'react';
 import CalendarView from './components/CalendarView';
 import DashboardView from './components/DashboardView';
 import DetailModal from './components/DetailModal';
-import SettingsModal from './components/SettingsModal';
 import { supabase } from './supabaseClient';
 import Login from './components/Common/Login';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('calendar');
-  const [logs, setLogs] = useState([]); // 빈 배열로 시작
+  const [logs, setLogs] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
   const [showSettings, setShowSettings] = useState(false);
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // 1. 로그인 상태 확인 및 DB 데이터 불러오기
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
@@ -28,94 +26,71 @@ export default function App() {
     return () => subscription.unsubscribe();
   }, []);
 
-  // 세션이 있을 때 DB에서 데이터 불러오기
   useEffect(() => {
     if (!session) return;
-
     const fetchLogs = async () => {
       const { data, error } = await supabase
         .from('movie_logs')
         .select('*')
         .eq('user_id', session.user.id);
-
       if (data) setLogs(data);
-      if (error) console.error("데이터 로딩 실패:", error);
     };
-
     fetchLogs();
   }, [session]);
 
-  // 2. 데이터 저장/수정 함수 (DB 연동)
- const updateLog = async (originalDate, newDate, updatedItems) => {
-  // 1. 기존 데이터 삭제 (해당 날짜의 기록을 DB에서 제거)
-  await supabase
-    .from('movie_logs')
-    .delete()
-    .eq('date', originalDate)
-    .eq('user_id', session.user.id);
+  const updateLog = async (originalDate, newDate, updatedItems) => {
+    await supabase.from('movie_logs').delete().eq('date', originalDate).eq('user_id', session.user.id);
+    if (updatedItems?.length > 0) {
+      await supabase.from('movie_logs').insert([{ date: newDate, items: updatedItems, user_id: session.user.id }]);
+    }
+    setLogs(prev => {
+      const filtered = prev.filter(l => l.date !== originalDate);
+      return updatedItems.length === 0 ? filtered : [...filtered, { date: newDate, items: updatedItems }];
+    });
+    setSelectedDate(null);
+  };
 
-  // 2. updatedItems가 비어있지 않다면(남은 영화가 있다면) 다시 저장
-  if (updatedItems && updatedItems.length > 0) {
-    await supabase
-      .from('movie_logs')
-      .insert([{ 
-        date: newDate, 
-        items: updatedItems, // 여기서 삭제된 영화가 빠진 새로운 배열이 DB로 들어갑니다.
-        user_id: session.user.id 
-      }]);
-  }
-
-  // 3. UI 상태 업데이트
-  setLogs(prev => {
-    const filtered = prev.filter(l => l.date !== originalDate);
-    // 남은 영화가 있다면 목록에 다시 추가, 없다면 삭제된 채로 반영
-    if (updatedItems.length === 0) return filtered;
-    return [...filtered, { date: newDate, items: updatedItems }];
-  });
-  
-  setSelectedDate(null);
-};
-
-  if (loading) return <div>로딩중...</div>;
+  if (loading) return <div className="flex h-[100dvh] items-center justify-center font-light tracking-[0.2em] text-gray-400">LOADING</div>;
   if (!session) return <Login />;
 
   return (
-    <div className="w-full h-screen bg-gray-100 flex justify-center">
-      <div className="w-full max-w-md h-full bg-white flex flex-col shadow-2xl overflow-hidden">
-        <header className="h-14 flex items-center justify-between px-4 border-b bg-white shrink-0">
-          <h1 className="text-lg font-black tracking-tighter">MY </h1>
+    <div className="w-full min-h-[100dvh] bg-white flex justify-center text-gray-900 font-sans">
+      <div className="w-full max-w-md h-[100dvh] bg-white flex flex-col border-x border-gray-50">
+        
+        {/* 헤더: 미니멀 & Uppercase */}
+        <header className="h-16 flex items-center justify-between px-6 border-b border-gray-50 shrink-0">
+          <h1 className="text-[11px] font-medium tracking-[0.2em] uppercase">My Letter Box</h1>
           {activeTab === 'calendar' ? (
-            <button className="text-2xl font-bold p-2" onClick={() => {
+            <button className="text-xl font-light hover:opacity-50 transition-opacity" onClick={() => {
               const d = new Date();
               setSelectedDate(`${d.getFullYear()}.${d.getMonth() + 1}.${d.getDate()}`);
             }}>+</button>
           ) : (
-            <button 
-              onClick={async () => {
-                await supabase.auth.signOut();
-                // 로그아웃 후 상태가 변경되면 Login 컴포넌트가 자동으로 노출됩니다.
-                window.location.reload(); 
-              }} 
-              className="px-3 py-1 text-xs font-bold bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors"
-            >
-              로그아웃
+            <button onClick={async () => { await supabase.auth.signOut(); window.location.reload(); }} 
+              className="text-[10px] tracking-[0.1em] uppercase text-gray-400 hover:text-gray-900 transition-colors">
+              Logout
             </button>
           )}
         </header>
             
+        {/* 본문 영역 */}
         <div className="flex-1 overflow-y-auto p-2">
           {activeTab === 'calendar' ? (
             <CalendarView logs={logs} onDateClick={setSelectedDate} />
           ) : (
             <DashboardView logs={logs} onClear={() => setLogs([])} />
           )}
-          {showSettings && <SettingsModal onClose={() => setShowSettings(false)} />}
+          
         </div>
-        <nav className="h-16 border-t bg-white flex items-center shrink-0">
-          <button className={`flex-1 font-black text-xs ${activeTab === 'calendar' ? 'text-black' : 'text-gray-400'}`} onClick={() => setActiveTab('calendar')}>달력</button>
-          <button className={`flex-1 font-black text-xs ${activeTab === 'dashboard' ? 'text-black' : 'text-gray-400'}`} onClick={() => setActiveTab('dashboard')}>통계</button>
+
+        {/* 내비게이션: 정갈한 하단 탭 */}
+        <nav className="h-16 border-t border-gray-50 flex items-center shrink-0">
+          <button className={`flex-1 text-[10px] tracking-[0.2em] uppercase ${activeTab === 'calendar' ? 'text-gray-900' : 'text-gray-300'}`} onClick={() => setActiveTab('calendar')}>Calendar</button>
+          <button className={`flex-1 text-[10px] tracking-[0.2em] uppercase ${activeTab === 'calendar' ? 'text-gray-300' : 'text-gray-900'}`} onClick={() => setActiveTab('dashboard')}>Dashboard</button>
         </nav>
       </div>
+
+      {/* 모달 영역 */}
       {selectedDate && (
         <DetailModal 
           date={selectedDate} 

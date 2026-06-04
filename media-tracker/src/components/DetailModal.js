@@ -7,20 +7,16 @@ export default function DetailModal({ date, data, onSave, onClose }) {
     return `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
   });
 
-  // 검색 관련 상태
   const [results, setResults] = useState([]);
-  const [activeIndex, setActiveIndex] = useState(null); // 현재 검색 중인 아이템 인덱스
+  const [activeIndex, setActiveIndex] = useState(null);
   const API_KEY = '4de847a38f096b28a48cd6872369435a';
 
- const searchMovie = async (q) => {
-    if (q.length < 2) {
-        setResults([]);
-        return;
-    }
+  const searchMovie = async (q) => {
+    if (q.length < 2) { setResults([]); return; }
     const res = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${q}&language=ko-KR`);
     const data = await res.json();
     setResults(data.results || []);
-};
+  };
 
   const selectMovie = (movie, index) => {
     const n = [...items];
@@ -29,70 +25,71 @@ export default function DetailModal({ date, data, onSave, onClose }) {
       poster_url: `https://image.tmdb.org/t/p/w500${movie.poster_path}`
     };
     setItems(n);
-    setResults([]); // 검색창 닫기
+    setResults([]);
     setActiveIndex(null);
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4">
-      <div className="bg-white w-full max-w-sm p-6 rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
-        <h2 className="font-black mb-4">기록 관리</h2>
-       <input 
+    <div className="fixed inset-0 bg-white/80 backdrop-blur-sm z-[100] flex items-center justify-center p-6">
+      <div className="bg-white w-full max-w-sm p-8 border border-gray-100 shadow-sm flex flex-col max-h-[85vh]">
+        
+        <h2 className="text-[11px] tracking-[0.3em] uppercase text-gray-400 mb-8">Edit Archive</h2>
+        
+        <input 
           type="date" 
-          className="w-full box-border p-3 mb-4 bg-gray-100 rounded-xl font-bold border border-gray-200 block" 
-          style={{ WebkitAppearance: 'none' }} // 사파리 기본 스타일 강제 제거
+          className="w-full p-4 mb-6 bg-transparent border-b border-gray-200 text-sm focus:outline-none" 
           value={targetDate} 
           onChange={(e) => setTargetDate(e.target.value)} 
         />
         
-        <div className="flex-1 overflow-y-auto mb-4">
+        <div className="flex-1 overflow-y-auto mb-8 space-y-6">
           {items.map((item, i) => (
-            <div key={i} className="bg-gray-50 p-3 rounded-xl mb-3 border relative">
-              <div className="flex gap-3">
-                <div className="w-16 h-24 bg-gray-200 rounded-lg overflow-hidden shrink-0 border">
-                  {item.poster_url ? <img src={item.poster_url} className="w-full h-full object-cover" alt="" onError={(e) => e.target.style.display = 'none'} /> : <div className="text-[9px] p-1 text-center">No Img</div>}
+            <div key={i} className="relative group">
+              <div className="flex gap-4 items-start">
+                <div className="w-16 h-24 bg-gray-50 border border-gray-100 shrink-0 overflow-hidden">
+                  {item.poster_url ? <img src={item.poster_url} className="w-full h-full object-cover" alt="" /> : null}
                 </div>
-                <div className="flex-1">
+                <div className="flex-1 space-y-2">
                   <input 
-                    className="w-full p-2 mb-1 rounded text-sm font-bold border" 
-                    placeholder="제목 검색" 
+                    className="w-full p-1 text-[13px] border-b border-gray-100 focus:border-gray-400 outline-none transition-colors" 
+                    placeholder="TITLE" 
                     value={item.title} 
                     onChange={(e) => {
                       const val = e.target.value;
-                      const n = [...items]; 
-                      n[i].title = val; 
-                      setItems(n);
-                      setActiveIndex(i); 
-                      searchMovie(val); // 여기서 직접 val 전달
+                      const n = [...items]; n[i].title = val; setItems(n);
+                      setActiveIndex(i); searchMovie(val);
                     }} 
                   />
-                  <input className="w-full p-2 rounded text-[10px] text-gray-600 border" placeholder="포스터 URL" value={item.poster_url} onChange={(e) => { const n = [...items]; n[i].poster_url = e.target.value; setItems(n); }} />
                 </div>
               </div>
               
-              {/* 검색 결과 레이어 */}
+              {/* 검색 결과 */}
               {activeIndex === i && results.length > 0 && (
-                <div className="absolute top-full left-0 w-full bg-white border rounded-b-xl shadow-xl z-50 max-h-40 overflow-y-auto mt-1">
+                <div className="absolute top-full left-0 w-full bg-white border border-gray-100 shadow-lg z-50 max-h-40 overflow-y-auto mt-2">
                   {results.map(m => (
-                    <button key={m.id} className="w-full p-2 text-left text-xs border-b flex gap-2 items-center hover:bg-gray-100" onClick={() => selectMovie(m, i)}>
-                      <img src={`https://image.tmdb.org/t/p/w92${m.poster_path}`} className="w-8 h-12 object-cover" alt="" />
-                      <span>{m.title} ({m.release_date?.split('-')[0]})</span>
+                    <button key={m.id} className="w-full p-3 text-left text-[11px] border-b border-gray-50 hover:bg-gray-50 flex gap-3 items-center" onClick={() => selectMovie(m, i)}>
+                      {m.poster_path && <img src={`https://image.tmdb.org/t/p/w92${m.poster_path}`} className="w-6 h-9 object-cover" alt="" />}
+                      <span>{m.title}</span>
                     </button>
                   ))}
                 </div>
               )}
-              <div className="flex justify-end mt-2"><button className="text-[10px] text-red-500 font-black px-2 py-1 bg-white border rounded" onClick={() => setItems(items.filter((_, idx) => idx !== i))}>삭제</button></div>
+              <button className="mt-2 text-[9px] text-gray-300 hover:text-red-400 uppercase tracking-widest" onClick={() => setItems(items.filter((_, idx) => idx !== i))}>Delete</button>
             </div>
           ))}
-          <button className="w-full py-4 bg-blue-500 text-white text-sm font-black rounded-xl" onClick={() => setItems([...items, { title: '', poster_url: '' }])}>+ 영화 추가하기</button>
+          
+          <button className="w-full py-4 border border-dashed border-gray-200 text-[10px] text-gray-400 uppercase tracking-[0.2em] hover:border-gray-400 transition-all" 
+            onClick={() => setItems([...items, { title: '', poster_url: '' }])}>
+            + Add Movie
+          </button>
         </div>
         
-        <div className="flex gap-2">
-          <button className="flex-1 py-3 bg-gray-200 rounded-xl font-black" onClick={onClose}>취소</button>
-          <button className="flex-1 py-3 bg-black text-white rounded-xl font-black" onClick={() => {
+        <div className="flex gap-4">
+          <button className="flex-1 py-3 text-[10px] uppercase tracking-[0.2em] text-gray-400 border border-gray-100 hover:bg-gray-50" onClick={onClose}>Close</button>
+          <button className="flex-1 py-3 text-[10px] uppercase tracking-[0.2em] text-white bg-gray-900 hover:bg-gray-800" onClick={() => {
             const [y, m, d] = targetDate.split('-');
             onSave(date, `${y}.${parseInt(m)}.${parseInt(d)}`, items.filter(i => i.title));
-          }}>저장</button>
+          }}>Save</button>
         </div>
       </div>
     </div>
