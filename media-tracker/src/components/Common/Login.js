@@ -9,40 +9,34 @@ export default function Login() {
   };
 
   return (
-    <div className="relative flex flex-col items-center justify-center min-h-screen bg-[#FDFCF8] px-8 font-sans">
-      {/* 배경 분위기 */}
-      <div className="absolute top-[10%] left-[10%] w-64 h-64 bg-yellow-100 rounded-full mix-blend-multiply filter blur-[80px] opacity-50"></div>
-
-      {/* 로고 영역 */}
-      <div className="z-10 text-center mb-16">
-        <h1 className="text-[52px] font-black tracking-tighter text-gray-900 leading-none mb-4">
+    // 배경을 더 깔끔한 흰색(bg-white)으로 통일
+    <div className="flex flex-col items-center justify-center min-h-screen bg-white px-8 font-sans">
+      
+      {/* 로고 영역: 폰트 두께를 줄이고 자간을 늘림 */}
+      <div className="text-center mb-20">
+        <h1 className="text-[32px] font-light tracking-[0.2em] text-gray-900 leading-none mb-6 uppercase">
           My Letter<br/>Box
         </h1>
-        <div className="bg-gray-900 text-white px-4 py-1 inline-block text-[10px] uppercase tracking-[0.2em] mb-8">
-          Movie, TV Show Log!
-        </div>
         
-        {/* 살짝 킹받는 문구 */}
-        <p className="text-gray-600 text-[15px] font-light italic leading-relaxed max-w-[220px] mx-auto">
-          골랐다, 봤다, 까먹었다.<br />
-          무한 루프를 끊어줄 <br />
-          나만의 데이터 저장소.
+        {/* 문구: italic 대신 깔끔한 normal 텍스트로 변경 */}
+        <p className="text-gray-400 text-[13px] font-light tracking-[0.15em] leading-relaxed">
+          COLLECTED, WATCHED, FORGOTTEN.<br />
+          YOUR PRIVATE ARCHIVE.
         </p>
       </div>
 
-      {/* 로그인 버튼 박스 */}
-      <div className="z-10 w-full max-w-[280px]">
+      {/* 버튼: 입체 그림자 제거, 얇은 테두리로 정갈하게 */}
+      <div className="w-full max-w-[240px]">
         <button
           onClick={handleLogin}
-          className="group w-full flex items-center justify-center gap-4 py-4 bg-white border-2 border-gray-900 text-gray-900 rounded-2xl font-bold tracking-widest text-[13px] hover:bg-gray-900 hover:text-white transition-all duration-300 shadow-[8px_8px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-[4px] active:translate-y-[4px]"
+          className="w-full py-4 border border-gray-200 text-gray-900 text-[11px] font-medium tracking-[0.2em] uppercase hover:bg-gray-50 transition-all active:scale-[0.98]"
         >
-          <span>기록하러 가기</span>
-          <span className="opacity-50">→</span>
+          Google Login
         </button>
       </div>
 
       <footer className="absolute bottom-8 text-[9px] uppercase tracking-[0.3em] text-gray-300">
-        Don't forget.
+        © 2026
       </footer>
     </div>
   );
