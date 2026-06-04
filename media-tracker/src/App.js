@@ -46,27 +46,35 @@ export default function App() {
   }, [session]);
 
   // 2. 데이터 저장/수정 함수 (DB 연동)
-  const updateLog = async (originalDate, newDate, updatedItems) => {
-    // 기존 데이터 삭제
+ const updateLog = async (originalDate, newDate, updatedItems) => {
+  // 1. 기존 데이터 삭제 (해당 날짜의 기록을 DB에서 제거)
+  await supabase
+    .from('movie_logs')
+    .delete()
+    .eq('date', originalDate)
+    .eq('user_id', session.user.id);
+
+  // 2. updatedItems가 비어있지 않다면(남은 영화가 있다면) 다시 저장
+  if (updatedItems && updatedItems.length > 0) {
     await supabase
       .from('movie_logs')
-      .delete()
-      .eq('date', originalDate)
-      .eq('user_id', session.user.id);
+      .insert([{ 
+        date: newDate, 
+        items: updatedItems, // 여기서 삭제된 영화가 빠진 새로운 배열이 DB로 들어갑니다.
+        user_id: session.user.id 
+      }]);
+  }
 
-    // 새 데이터 저장
-    const { error } = await supabase
-      .from('movie_logs')
-      .insert([{ date: newDate, items: updatedItems, user_id: session.user.id }]);
-
-    if (!error) {
-      setLogs(prev => {
-        const filtered = prev.filter(l => l.date !== originalDate);
-        return [...filtered, { date: newDate, items: updatedItems }];
-      });
-    }
-    setSelectedDate(null);
-  };
+  // 3. UI 상태 업데이트
+  setLogs(prev => {
+    const filtered = prev.filter(l => l.date !== originalDate);
+    // 남은 영화가 있다면 목록에 다시 추가, 없다면 삭제된 채로 반영
+    if (updatedItems.length === 0) return filtered;
+    return [...filtered, { date: newDate, items: updatedItems }];
+  });
+  
+  setSelectedDate(null);
+};
 
   if (loading) return <div>로딩중...</div>;
   if (!session) return <Login />;
