@@ -38,11 +38,12 @@ export default function DetailModal({ date, data, onSave, onClose }) {
       <div className="bg-white w-full max-w-sm p-6 rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
         <h2 className="font-black mb-4">기록 관리</h2>
        <input 
-  type="date" 
-  className="w-full p-4 mb-4 bg-gray-100 rounded-xl font-bold border border-gray-200" 
-  value={targetDate} 
-  onChange={(e) => setTargetDate(e.target.value)} 
-/>
+          type="date" 
+          className="w-full box-border p-3 mb-4 bg-gray-100 rounded-xl font-bold border border-gray-200 block" 
+          style={{ WebkitAppearance: 'none' }} // 사파리 기본 스타일 강제 제거
+          value={targetDate} 
+          onChange={(e) => setTargetDate(e.target.value)} 
+        />
         
         <div className="flex-1 overflow-y-auto mb-4">
           {items.map((item, i) => (
@@ -54,7 +55,7 @@ export default function DetailModal({ date, data, onSave, onClose }) {
                 <div className="flex-1">
                   <input 
                     className="w-full p-2 mb-1 rounded text-sm font-bold border" 
-                    placeholder="영화 제목 검색" 
+                    placeholder="제목 검색" 
                     value={item.title} 
                     onChange={(e) => {
                       const val = e.target.value;
