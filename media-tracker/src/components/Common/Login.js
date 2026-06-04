@@ -25,7 +25,8 @@ export default function Login() {
         {/* 살짝 킹받는 문구 */}
         <p className="text-gray-600 text-[15px] font-light italic leading-relaxed max-w-[220px] mx-auto">
           골랐다, 봤다, 까먹었다.<br />
-          무한 루프를 끊어줄 당신의 데이터 저장소.
+          무한 루프를 끊어줄 <br />
+          나만의 데이터 저장소.
         </p>
       </div>
 
