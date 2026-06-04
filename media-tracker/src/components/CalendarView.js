@@ -25,60 +25,44 @@ export default function CalendarView({ logs, onDateClick }) {
       </div>
 
       {/* 달력 그리드 */}
-      <div className="grid grid-cols-7 gap-px bg-gray-200 border border-gray-200">
-        {[...blanks, ...days].map((day, i) => {
-          if (!day) return <div key={i} className="h-24 bg-gray-50" />;
-          const dateStr = `${year}.${month + 1}.${day}`;
-          const log = logs.find(l => l.date === dateStr);
-          
-          return (
-            <div 
-              key={i} 
-              className="h-24 bg-white relative cursor-pointer border-b border-r overflow-hidden" 
-              onClick={() => onDateClick(dateStr)}
-            >
-              {/* 날짜 숫자 */}
-              <span className={`absolute top-0.5 left-0.5 text-[11px] font-black z-20 px-1 ${i % 7 === 0 ? 'text-red-500' : i % 7 === 6 ? 'text-blue-500' : 'text-black'}`}>
-                {day}
-              </span>
+     <div className="grid grid-cols-7 border-t border-l border-gray-100">
+  {[...blanks, ...days].map((day, i) => {
+    // 1. 날짜가 없는 빈 칸도 bg-white로 설정
+    if (!day) return <div key={i} className="h-24 bg-white border-b border-r border-gray-100" />;
+    
+    const dateStr = `${year}.${month + 1}.${day}`;
+    const log = logs.find(l => l.date === dateStr);
+    
+    return (
+      <div 
+        key={i} 
+        // 2. 각 칸에 border-b, border-r을 주어 선을 만듭니다.
+        className="h-24 bg-white relative cursor-pointer border-b border-r border-gray-100 overflow-hidden" 
+        onClick={() => onDateClick(dateStr)}
+      >
+        <span className={`absolute top-0.5 left-0.5 text-[11px] font-black z-20 px-1 ${i % 7 === 0 ? 'text-red-500' : i % 7 === 6 ? 'text-blue-500' : 'text-black'}`}>
+          {day}
+        </span>
 
-              {/* 영화 포스터 표시 영역 */}
-              {log?.items?.length > 0 && (
-                <div className="absolute inset-0 w-full h-full flex flex-col">
-                  {/* 총 편수 배지 (항상 우측 하단에 표시) */}
-                  <div className="absolute z-30 bottom-0 right-0 bg-black/70 text-white text-[9px] px-1.5 py-0.5 font-black rounded-tl-lg">
-                    {log.items.length}편
-                  </div>
-
-                  {log.items.length === 1 ? (
-                    <img 
-                      src={log.items[0].img} 
-                      className="w-full h-full object-cover" 
-                      alt="" 
-                      onError={(e) => e.target.style.display = 'none'} 
-                    />
-                  ) : (
-                    <>
-                      <img 
-                        src={log.items[0].img} 
-                        className="w-full h-1/2 object-cover" 
-                        alt="" 
-                        onError={(e) => e.target.style.display = 'none'} 
-                      />
-                      <img 
-                        src={log.items[1].img} 
-                        className="w-full h-1/2 object-cover" 
-                        alt="" 
-                        onError={(e) => e.target.style.display = 'none'} 
-                      />
-                    </>
-                  )}
-                </div>
-              )}
+        {log?.items?.length > 0 && (
+          <div className="absolute inset-0 w-full h-full flex flex-col">
+            <div className="absolute z-30 bottom-0 right-0 bg-black/70 text-white text-[9px] px-1.5 py-0.5 font-black rounded-tl-lg">
+              {log.items.length}편
             </div>
-          );
-        })}
+            {log.items.length === 1 ? (
+              <img src={log.items[0].img} className="w-full h-full object-cover" alt="" onError={(e) => e.target.style.display = 'none'} />
+            ) : (
+              <>
+                <img src={log.items[0].img} className="w-full h-1/2 object-cover" alt="" onError={(e) => e.target.style.display = 'none'} />
+                <img src={log.items[1].img} className="w-full h-1/2 object-cover" alt="" onError={(e) => e.target.style.display = 'none'} />
+              </>
+            )}
+          </div>
+        )}
       </div>
+    );
+  })}
+</div>
     </div>
   );
 }
