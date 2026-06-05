@@ -47,3 +47,14 @@ input[type='number'] {
   transform: scale(1.02);
   transition: transform 0.2s ease;
 }
+/* 스크롤바를 완전히 숨김 */
+::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+* {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}

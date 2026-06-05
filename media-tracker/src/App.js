@@ -9,7 +9,6 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('calendar');
   const [logs, setLogs] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
-  const [showSettings, setShowSettings] = useState(false);
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -29,7 +28,7 @@ export default function App() {
   useEffect(() => {
     if (!session) return;
     const fetchLogs = async () => {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from('movie_logs')
         .select('*')
         .eq('user_id', session.user.id);

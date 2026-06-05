@@ -29,3 +29,13 @@
   border-radius: 4px;
   margin-top: auto;
 }
+
+/* 스크롤바를 완전히 숨김 */
+.overflow-y-auto {
+  scrollbar-width: none; /* 파이어폭스 대응 */
+  -ms-overflow-style: none; /* IE 대응 */
+}
+
+.overflow-y-auto::-webkit-scrollbar {
+  display: none; /* 크롬, 사파리 대응 */
+}
