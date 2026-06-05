@@ -29,10 +29,15 @@ export const useDashboardData = (selectedYear, selectedCategory) => {
             mStats[key] = (mStats[key] || 0) + 1;
             if (item.rating >= 1 && item.rating <= 5) rDist[item.rating] += 1;
             
-            // 데이터 분류
+            // 데이터 분류: item에 날짜 정보를 포함해서 저장
             if (item.status !== 'wish') {
-              yearWatchedMovies.push(item);
-              if (item.rating === 5) yearBestMovies.push(item);
+              // 수정된 부분: date를 포함한 새 객체 생성
+              const watchedItem = { ...item, date: log.date };
+              yearWatchedMovies.push(watchedItem);
+              
+              if (item.rating === 5) {
+                yearBestMovies.push(watchedItem); // bestMovies도 날짜 포함
+              }
             }
           }
         });
