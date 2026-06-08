@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useLogs } from '../core/context/LogContext';
+import { useSwipeable } from 'react-swipeable';
 
 export default function CalendarView({ onDateClick }) {
   const { logs } = useLogs();
@@ -23,6 +24,14 @@ export default function CalendarView({ onDateClick }) {
     return acc;
   }, { watched: 0, wish: 0 });
 
+  // 1. 핸들러 정의 (캘린더 내부의 상태 관리 함수를 여기에 연결)
+  const handlers = useSwipeable({
+    onSwipedLeft: () => console.log("다음 달로 이동"),
+    onSwipedRight: () => console.log("이전 달로 이동"),
+    preventScrollOnSwipe: true,
+    trackMouse: true
+  });
+
   const years = Array.from({ length: 11 }, (_, i) => 2020 + i);
   const months = Array.from({ length: 12 }, (_, i) => i);
   const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -31,6 +40,7 @@ export default function CalendarView({ onDateClick }) {
   const blanks = Array.from({ length: firstDay }, () => null);
 
   return (
+    <div {...handlers} className="w-full h-full flex flex-col">
     <div className="w-full bg-white">
       {/* 1. 헤더 영역: 연도/월 선택기와 통계 정보 세로 배치 */}
       <div className="flex justify-between items-center px-2 py-3 border-b border-gray-100">
@@ -72,17 +82,40 @@ export default function CalendarView({ onDateClick }) {
         ))}
       </div>
 
+      
+
       {/* 3. 달력 그리드 */}
       <div className="grid grid-cols-7 border-t border-l border-gray-100">
         {[...blanks, ...days].map((day, i) => {
           if (!day) return <div key={i} className="h-24 bg-white border-b border-r border-gray-100" />;
           const dateStr = `${year}.${month + 1}.${day}`;
           const log = (logs || []).find(l => l.date === dateStr);
+          // [추가] 기록된 작품 개수 계산
+    const count = log?.items?.length || 0;
           return (
             <div key={i} className="h-24 bg-white relative cursor-pointer border-b border-r border-gray-100 overflow-hidden group" onClick={() => onDateClick(dateStr)}>
               <span className={`absolute top-0.5 left-0.5 text-[11px] font-black z-20 px-1 rounded-full ${isToday(day) ? 'bg-red-500 text-white' : i % 7 === 0 ? 'text-red-500' : i % 7 === 6 ? 'text-blue-500' : 'text-black'}`}>
                 {day}
               </span>
+
+              {/* [추가] 작품 개수 표시 (포스터 위 오른쪽 하단) */}
+        {count > 0 && (
+  <div className="absolute bottom-1 right-1 z-30 flex gap-0.5">
+    {/* 본 것(Watched) 개수 */}
+    {log.items.filter(i => i.status === 'watched').length > 0 && (
+      <span className="bg-black/70 text-white text-[8px] px-1 py-0.5 rounded shadow-sm">
+        {log.items.filter(i => i.status === 'watched').length}편
+      </span>
+    )}
+    {/* 찜(Wish) 개수 */}
+    {log.items.filter(i => i.status === 'wish').length > 0 && (
+      <span className="bg-red-500/90 text-white text-[8px] px-1 py-0.5 rounded shadow-sm">
+        {log.items.filter(i => i.status === 'wish').length}편
+      </span>
+    )}
+  </div>
+)}
+
               {log?.items?.length > 0 && (
                 <div className="absolute inset-0 w-full h-full flex flex-col">
                   {log.items.length === 1 ? (
@@ -99,6 +132,7 @@ export default function CalendarView({ onDateClick }) {
           );
         })}
       </div>
+    </div>
     </div>
   );
 }
