@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useLogs } from '../core/context/LogContext';
 import { useMovieSearch } from '../core/hooks/useMovieSearch.jsx'; 
 
@@ -40,6 +40,14 @@ export default function RecordEditor({ date, onClose, editData }) {
     e.target.style.height = 'auto';
     e.target.style.height = e.target.scrollHeight + 'px';
   };
+
+  // [추가] 에디터가 열리면 배경 스크롤 고정
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, []);
 
   return (
     <div className="fixed inset-0 bg-white z-[100] flex flex-col items-center">

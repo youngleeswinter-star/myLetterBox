@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useBuckets } from '../core/context/BucketContext';
 import { useMovieSearch } from '../core/hooks/useMovieSearch.jsx'; // 훅 활용
 
@@ -23,6 +23,14 @@ export default function BucketEditor({ onClose, editData }) {
     else await addToBucket({ date: new Date().toISOString().split('T')[0], items: [{ ...movie }] });
     onClose();
   };
+
+  // [추가] 에디터가 열리면 배경 스크롤 고정
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, []);
 
   return (
     <div className="fixed inset-0 bg-white z-[100] flex flex-col items-center">
