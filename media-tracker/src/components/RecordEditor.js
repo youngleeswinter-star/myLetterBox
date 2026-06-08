@@ -126,7 +126,29 @@ export default function RecordEditor({ date, onClose, editData }) {
                 <div className="flex gap-1">{[1,2,3,4,5].map(s => <button key={s} onClick={() => { const n = [...items]; n[i].rating = s; setItems(n); }} className={`text-[14px] ${item.rating >= s ? 'text-black' : 'text-gray-300'}`}>★</button>)}</div>
                 <div className="flex items-center gap-4">
                   <button onClick={() => { const n = [...items]; n[i].isHeart = !n[i].isHeart; setItems(n); }} className={`${item.isHeart ? 'text-red-500' : 'text-gray-300'}`}>♥</button>
-                  <input type="number" className="w-8 text-center text-[10px] border" value={item.repeatCount || 1} onChange={(e) => { const n = [...items]; n[i].repeatCount = parseInt(e.target.value); setItems(n); }} />
+                 <input 
+  type="number" 
+  min="1"
+  className="w-8 text-center text-[10px] border" 
+  // 1. 초기값은 숫자지만, 입력 중에는 빈 문자열이 가능하도록 처리
+  value={item.repeatCount === undefined ? '' : item.repeatCount} 
+  onChange={(e) => { 
+    const n = [...items];
+    const val = e.target.value;
+    
+    // 2. 입력값이 비어있으면 1로, 아니면 숫자로 변환하여 저장
+    n[i].repeatCount = val === '' ? '' : parseInt(val, 10);
+    setItems(n);
+  }}
+  // 3. 입력창에서 나갈 때(onBlur) 빈 값이면 1로 복구
+  onBlur={() => {
+    if (item.repeatCount === '' || item.repeatCount < 1) {
+      const n = [...items];
+      n[i].repeatCount = 1;
+      setItems(n);
+    }
+  }}
+/>
                 </div>
               </div>
             </div>
