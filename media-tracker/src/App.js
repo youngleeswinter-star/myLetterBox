@@ -28,6 +28,8 @@ export default function App() {
   const [editData, setEditData] = useState(null); // 버킷 편집용
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
+  // [추가] 달력이 보고 있는 달을 기억할 상태
+  const [calendarDate, setCalendarDate] = useState(new Date());
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => { setSession(session); setLoading(false); });
@@ -80,7 +82,11 @@ export default function App() {
               ) : (
                 <div className="p-2">
                   {activeTab === 'calendar' ? (
-                    <CalendarView onDateClick={(d) => { setSelectedDate(d); setViewMode('edit-record'); }} />
+                    <CalendarView 
+      currentDate={calendarDate}        // 추가
+      setCurrentDate={setCalendarDate}  // 추가
+      onDateClick={(d) => { setSelectedDate(d); setViewMode('edit-record'); }} 
+    />
                   ) : activeTab === 'dashboard' ? (
                     <DashboardView />
                   ) : (

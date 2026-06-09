@@ -54,7 +54,7 @@ export default function DashboardView() {
       {viewMode !== 'summary' && (
         <div className="flex gap-2 mb-6 animate-in slide-in-from-top-2 duration-300">
           <input 
-            type="text" placeholder="SEARCH MOVIES..." value={searchTerm}
+            type="text" placeholder="SEARCH RECORDS..." value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full text-[10px] tracking-[0.1em] p-2 border-b border-gray-900 outline-none"
           />

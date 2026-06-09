@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useBuckets } from '../core/context/BucketContext';
 import BucketEditor from './BucketEditor';
 
@@ -8,12 +8,18 @@ export default function BucketView() {
   const [editingMovie, setEditingMovie] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
 
-  // 검색어에 따른 필터링 후, 최신순(역순)으로 정렬
-  const filteredBuckets = [...buckets]
-    .reverse() // 등록순의 반대(최신순)로 정렬
-    .filter(b => 
+  // [수정] useMemo를 사용하여 순서를 완전히 고정
+  const filteredBuckets = useMemo(() => {
+    // 1. 먼저 검색 필터링을 수행 (제목 관련)
+    let result = [...buckets].filter(b => 
       b.items[0]?.title.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
+    // 2. 그 다음 정렬 수행 (제목 순서가 아닌 생성 시간 기준)
+    return result.sort((a, b) => {
+      return new Date(b.created_at) - new Date(a.created_at);
+    });
+  }, [buckets, searchTerm]);
 
   return (
     <div className="pb-20">
