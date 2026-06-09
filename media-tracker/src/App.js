@@ -23,7 +23,7 @@ function ShuffleButton() {
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('calendar');
-  const [viewMode, setViewMode] = useState('list'); // 'list' | 'edit-record' | 'edit-bucket'
+  const [viewMode, setViewMode] = useState('list');
   const [selectedDate, setSelectedDate] = useState(null);
   const [editData, setEditData] = useState(null); // 버킷 편집용
   const [session, setSession] = useState(null);
@@ -77,7 +77,8 @@ if (loading) {
                 <h1 className="text-[11px] font-medium tracking-[0.2em] uppercase">My Letter Box</h1>
                 <div className="flex items-center">
                   <ShuffleButton />
-                  {activeTab === 'calendar' ? (
+                  <button onClick={() => supabase.auth.signOut()} className="text-[10px] uppercase text-gray-400">Logout</button>
+                  {/* {activeTab === 'calendar' ? (
                     <button className="text-xl font-light" onClick={() => {
                       const d = new Date();
                       setSelectedDate(`${d.getFullYear()}.${d.getMonth() + 1}.${d.getDate()}`);
@@ -85,7 +86,7 @@ if (loading) {
                     }}>+</button>
                   ) : (
                     <button onClick={() => supabase.auth.signOut()} className="text-[10px] uppercase text-gray-400">Logout</button>
-                  )}
+                  )} */}
                 </div>
               </header>
             )}
