@@ -37,7 +37,32 @@ export default function App() {
     return () => subscription.unsubscribe();
   }, []);
 
-  if (loading) return <div className="flex h-[100dvh] items-center justify-center text-gray-400">LOADING</div>;
+ // App.js 상단 로딩 처리 부분
+if (loading) {
+  return (
+    <div className="w-full max-w-md h-[100dvh] bg-white flex flex-col mx-auto p-4 space-y-4 animate-pulse">
+      {/* 헤더 스켈레톤 */}
+      <div className="h-16 flex items-center justify-between border-b border-gray-50">
+        <div className="w-24 h-3 bg-stone-100 rounded" />
+        <div className="w-8 h-8 bg-stone-100 rounded-full" />
+      </div>
+      
+      {/* 달력 그리드 스켈레톤 */}
+      <div className="grid grid-cols-7 gap-2 flex-1">
+        {Array.from({ length: 35 }).map((_, i) => (
+          <div key={i} className="aspect-square bg-stone-50 rounded-sm" />
+        ))}
+      </div>
+
+      {/* 네비게이션 스켈레톤 */}
+      <div className="h-16 border-t border-gray-50 flex items-center">
+        <div className="flex-1 h-3 bg-stone-100 mx-4 rounded" />
+        <div className="flex-1 h-3 bg-stone-100 mx-4 rounded" />
+        <div className="flex-1 h-3 bg-stone-100 mx-4 rounded" />
+      </div>
+    </div>
+  );
+}
   if (!session) return <Login />;
 
   return (
