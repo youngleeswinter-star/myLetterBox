@@ -63,7 +63,7 @@ export default function DashboardView() {
       )}
 
       {/* 3. 모드 탭 */}
-      <div className="flex gap-6 mb-8 border-b border-gray-50 pb-2">
+      <div className="flex gap-6 mb-4 border-b border-gray-50 pb-2">
         {['summary', 'watched', 'wishlist'].map((mode) => (
           <button 
             key={mode} 
@@ -85,7 +85,7 @@ export default function DashboardView() {
             <DashboardSummary watchedMovies={watchedMovies} />
             <div>
               <h2 className="text-[9px] font-bold tracking-[0.3em] uppercase text-gray-400 mb-6 text-center">{selectedYear} TOP RATED</h2>
-              <LibrarySection movies={bestMovies.slice(0, 4)} type="watched" />
+              <LibrarySection movies={bestMovies.slice(0, 4)} type="summary" />
               <div className="flex justify-center mt-4">
                 <button onClick={() => setViewMode('watched')} className="text-[8px] text-gray-400 underline underline-offset-4 hover:text-black">
                   VIEW ALL BEST MOVIES

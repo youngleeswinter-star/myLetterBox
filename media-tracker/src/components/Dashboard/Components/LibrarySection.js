@@ -1,4 +1,4 @@
-export default function LibrarySection({ movies, type = 'watched', showDate = false }) {
+export default function LibrarySection({ movies, type = 'watched', showDate = false, showCount = true }) {
   // 날짜 안전 변환 함수
   const parseDate = (dateStr) => {
     if (!dateStr) return new Date(0);
@@ -7,7 +7,7 @@ export default function LibrarySection({ movies, type = 'watched', showDate = fa
   };
 
   const sortedMovies = [...(movies || [])].sort((a, b) => {
-    if (type === 'watched') {
+    if (type === 'summary' || type === 'watched' ) {
       return parseDate(b.date) - parseDate(a.date); // 최신순
     } else {
       return parseDate(a.wishDate) - parseDate(b.wishDate); // 과거순
@@ -17,6 +17,17 @@ export default function LibrarySection({ movies, type = 'watched', showDate = fa
   if (!sortedMovies.length) return <p className="text-[10px] text-gray-300 italic p-6 text-center">No records found.</p>;
 
   return (
+
+    <div>
+    {/* type이 'summary'가 아닐 때만 개수 뱃지 표시 */}
+      {type !== 'summary' && (
+        <div className="px-4 pb-2">
+          <span className="text-[9px] uppercase tracking-[0.2em] text-gray-400 border border-gray-100 px-3 py-1 rounded-sm bg-white">
+            {type === 'watched' ? 'WATCHED' : 'WISH'} : {sortedMovies.length}
+          </span>
+        </div>
+      )}
+
     <div className="grid grid-cols-2 gap-4 p-4">
       {sortedMovies.map((m, i) => (
         <div key={i} className="group relative bg-gray-100 aspect-[2/3] overflow-hidden shadow-sm">
@@ -38,7 +49,7 @@ export default function LibrarySection({ movies, type = 'watched', showDate = fa
             {/* 1. 날짜 표시 */}
             {(m.date || m.wishDate) && (
               <div className="text-[8px] text-gray-400 uppercase tracking-[0.2em] mb-2 border-b border-gray-700 pb-1 w-full">
-                {type === 'watched' ? `Viewed: ${m.date}` : `Plan: ${m.wishDate}`}
+                {type === 'watched' || type === 'summary' ? `Viewed: ${m.date}` : `Plan: ${m.wishDate}`}
               </div>
             )}
 
@@ -62,9 +73,23 @@ export default function LibrarySection({ movies, type = 'watched', showDate = fa
                 </div>
               </>
             )}
+
+            {type === 'summary' && (
+              <>
+                {m.review ? (
+                  <p className="text-gray-300 text-[10px] italic mt-3 px-1 leading-relaxed line-clamp-4">
+                    "{m.review}"
+                  </p>
+                ) : (
+                  <p className="text-gray-500 text-[10px] mt-3">No review.</p>
+                )}
+                
+              </>
+            )}
           </div>
         </div>
       ))}
+    </div>
     </div>
   );
 }

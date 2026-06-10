@@ -57,8 +57,8 @@ export default function CalendarView({ currentDate, setCurrentDate, onDateClick 
       </div>
 
       <div className="flex justify-center gap-6 text-[8px] uppercase tracking-[0.2em] text-stone-400 pb-4">
-        <span>{stats.watched} WATCHED</span>
-        <span>{stats.wish} WISH</span>
+        <span>{stats.watched} 봤어요</span>
+        <span>{stats.wish} 보고싶어요</span>
       </div>
 
       {/* 달력 그리드 */}
@@ -124,7 +124,7 @@ export default function CalendarView({ currentDate, setCurrentDate, onDateClick 
                     </div>
                   )}
 
-                  {/* 뱃지 레이어 (수정 없음) */}
+                  {/* 뱃지 레이어 */}
                   {(log?.items?.length > 1 || (log?.items?.length === 1 && log.items[0].status === 'wish')) && (
                     <div className="absolute bottom-1 right-1 z-20 flex flex-row-reverse gap-1 items-center">
                       {log.items.length > 1 && log.items.filter(i => i.status === 'watched').length > 0 && (
@@ -135,12 +135,26 @@ export default function CalendarView({ currentDate, setCurrentDate, onDateClick 
                       )}
                       {log.items.filter(i => i.status === 'wish').length > 0 && (
                         <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-red-500 text-white text-[7px] font-bold shadow-sm">
-                          <svg width="7" height="7" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg>
+                          <svg width="7" height="7" viewBox="0 0 24 24" fill="currentColor">
+                            {/* 찜(Wish) 모양 아이콘으로 변경 (예: 북마크 형태) */}
+                            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+                          </svg>
                           <span>{log.items.filter(i => i.status === 'wish').length}</span>
                         </div>
                       )}
                     </div>
                   )}
+
+                  {/* 2. 마음에 든 작품 - 하트 아이콘 레이어 (오른쪽 상단 - 포인트용) */}
+                  {/* 뱃지와 겹치지 않게 위치를 아예 다르게 잡았습니다 */}
+                  {log?.items?.some(i => i.isHeart) && (
+                    <div className="absolute top-1 right-1 z-20">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="#F87171">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                      </svg>
+                    </div>
+                  )}
+
                 </div>
               </div>
             );

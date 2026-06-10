@@ -124,7 +124,7 @@ export default function RecordEditor({ date, onClose, editData }) {
               </div>
 
               {/* 제목 검색 영역 - 수정 */}
-             {/* 제목 검색 영역 */}
+              {/* 제목 검색 영역 */}
               <div className="relative">
                 <input
                   className="w-full text-lg font-light text-stone-800 border-b border-stone-200 outline-none pb-1 placeholder:text-stone-300"
@@ -141,17 +141,17 @@ export default function RecordEditor({ date, onClose, editData }) {
 
                 {/* 교체된 부분: 공통 컴포넌트 사용 */}
                 {activeIndex === i && (
-                  <MovieSearchResult 
-                    results={results} 
-   onSelect={(selectedMovie) => {
-    // 이제 여기서 selectMovie(selectedMovie, i)를 호출하면 
-    // 기존 로직이 poster_path를 인식하여 URL을 생성합니다.
-    selectMovie(selectedMovie, i);
-      
-      // 2. 검색창 닫기 (이 함수들은 RecordEditor에 이미 정의되어 있습니다)
-      setActiveIndex(null);
-      setResults([]);
-    }}
+                  <MovieSearchResult
+                    results={results}
+                    onSelect={(selectedMovie) => {
+                      // 이제 여기서 selectMovie(selectedMovie, i)를 호출하면 
+                      // 기존 로직이 poster_path를 인식하여 URL을 생성합니다.
+                      selectMovie(selectedMovie, i);
+
+                      // 2. 검색창 닫기 (이 함수들은 RecordEditor에 이미 정의되어 있습니다)
+                      setActiveIndex(null);
+                      setResults([]);
+                    }}
                   />
                 )}
               </div>
@@ -174,8 +174,9 @@ export default function RecordEditor({ date, onClose, editData }) {
                     onClick={() => { const n = [...items]; n[i].status = 'wish'; setItems(n); }}
                     className={`flex items-center gap-1.5 px-3 py-1 text-[10px] ${item.status === 'wish' ? 'bg-stone-800 text-white' : 'text-stone-400'}`}
                   >
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
+                    <svg width="7" height="7" viewBox="0 0 24 24" fill="currentColor">
+                      {/* 찜(Wish) 모양 아이콘으로 변경 (예: 북마크 형태) */}
+                      <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
                     </svg>
                     보고싶어요
                   </button>
