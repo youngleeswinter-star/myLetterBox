@@ -11,7 +11,7 @@ import { BucketProvider, useBuckets } from './core/context/BucketContext';
 function ShuffleButton() {
   const { buckets } = useBuckets();
   const handleShuffle = () => {
-    if (buckets.length > 0) {
+    if (buckets?.length > 0) {
       const random = buckets[Math.floor(Math.random() * buckets.length)];
       alert(`오늘 뭐 보지?: ${random.items[0]?.title || "Untitled"} ✨`);
     } else {
@@ -25,10 +25,9 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('calendar');
   const [viewMode, setViewMode] = useState('list');
   const [selectedDate, setSelectedDate] = useState(null);
-  const [editData, setEditData] = useState(null); // 버킷 편집용
+  const [editData, setEditData] = useState(null);
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
-  // [추가] 달력이 보고 있는 달을 기억할 상태
   const [calendarDate, setCalendarDate] = useState(new Date());
 
   useEffect(() => {
@@ -37,82 +36,38 @@ export default function App() {
     return () => subscription.unsubscribe();
   }, []);
 
- // App.js 상단 로딩 처리 부분
-if (loading) {
-  return (
-    <div className="w-full max-w-md h-[100dvh] bg-white flex flex-col mx-auto p-4 space-y-4 animate-pulse">
-      {/* 헤더 스켈레톤 */}
-      <div className="h-16 flex items-center justify-between border-b border-gray-50">
-        <div className="w-24 h-3 bg-stone-100 rounded" />
-        <div className="w-8 h-8 bg-stone-100 rounded-full" />
-      </div>
-      
-      {/* 달력 그리드 스켈레톤 */}
-      <div className="grid grid-cols-7 gap-2 flex-1">
-        {Array.from({ length: 35 }).map((_, i) => (
-          <div key={i} className="aspect-square bg-stone-50 rounded-sm" />
-        ))}
-      </div>
-
-      {/* 네비게이션 스켈레톤 */}
-      <div className="h-16 border-t border-gray-50 flex items-center">
-        <div className="flex-1 h-3 bg-stone-100 mx-4 rounded" />
-        <div className="flex-1 h-3 bg-stone-100 mx-4 rounded" />
-        <div className="flex-1 h-3 bg-stone-100 mx-4 rounded" />
-      </div>
-    </div>
-  );
-}
   if (!session) return <Login />;
 
   return (
     <LogProvider session={session}>
       <BucketProvider session={session}>
         <div className="w-full min-h-[100dvh] bg-white flex justify-center text-gray-900 font-sans">
-          <div className="w-full max-w-md h-[100dvh] bg-white flex flex-col border-x border-gray-50">
+          <div className="w-full max-w-md h-[100dvh] bg-white flex flex-col border-x border-gray-50 overflow-hidden">
             
-            {/* 리스트 모드일 때만 헤더 노출 */}
             {viewMode === 'list' && (
               <header className="h-16 flex items-center justify-between px-6 border-b border-gray-50 shrink-0">
                 <h1 className="text-[11px] font-medium tracking-[0.2em] uppercase">My Letter Box</h1>
                 <div className="flex items-center">
                   <ShuffleButton />
                   <button onClick={() => supabase.auth.signOut()} className="text-[10px] uppercase text-gray-400">Logout</button>
-                  {/* {activeTab === 'calendar' ? (
-                    <button className="text-xl font-light" onClick={() => {
-                      const d = new Date();
-                      setSelectedDate(`${d.getFullYear()}.${d.getMonth() + 1}.${d.getDate()}`);
-                      setViewMode('edit-record');
-                    }}>+</button>
-                  ) : (
-                    <button onClick={() => supabase.auth.signOut()} className="text-[10px] uppercase text-gray-400">Logout</button>
-                  )} */}
                 </div>
               </header>
             )}
 
-            {/* 메인 컨텐츠 영역 (페이지 전환) */}
-            <div className="flex-1 overflow-y-auto">
+            <div className="flex-1 overflow-hidden flex flex-col">
               {viewMode === 'edit-record' ? (
-                <RecordEditor 
-                  mode="record" 
-                  date={selectedDate} 
-                  onClose={() => setViewMode('list')} 
-                />
+                <RecordEditor mode="record" date={selectedDate} onClose={() => setViewMode('list')} />
               ) : viewMode === 'edit-bucket' ? (
-                <RecordEditor 
-                  mode="bucket" 
-                  editData={editData} 
-                  onClose={() => setViewMode('list')} 
-                />
+                <RecordEditor mode="bucket" editData={editData} onClose={() => setViewMode('list')} />
               ) : (
-                <div className="p-2">
+                <div className="flex-1 overflow-y-auto p-2">
                   {activeTab === 'calendar' ? (
                     <CalendarView 
-      currentDate={calendarDate}        // 추가
-      setCurrentDate={setCalendarDate}  // 추가
-      onDateClick={(d) => { setSelectedDate(d); setViewMode('edit-record'); }} 
-    />
+                      isLoading={loading}
+                      currentDate={calendarDate} 
+                      setCurrentDate={setCalendarDate} 
+                      onDateClick={(d) => { setSelectedDate(d); setViewMode('edit-record'); }} 
+                    />
                   ) : activeTab === 'dashboard' ? (
                     <DashboardView />
                   ) : (
@@ -122,7 +77,6 @@ if (loading) {
               )}
             </div>
 
-            {/* 리스트 모드일 때만 네비게이션 노출 */}
             {viewMode === 'list' && (
               <nav className="h-16 border-t border-gray-50 flex items-center shrink-0">
                 <button className={`flex-1 text-[10px] uppercase ${activeTab === 'calendar' ? 'font-bold' : 'text-gray-300'}`} onClick={() => setActiveTab('calendar')}>Calendar</button>

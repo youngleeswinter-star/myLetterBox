@@ -2,8 +2,9 @@ import React, { useMemo, useRef } from 'react';
 import { useLogs } from '../core/context/LogContext';
 import { useSwipeable } from 'react-swipeable';
 
-export default function CalendarView({ currentDate, setCurrentDate, onDateClick }) {
+export default function CalendarView({ currentDate, setCurrentDate, onDateClick, isLoading }) {
   const { logs } = useLogs();
+
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
   const monthInputRef = useRef(null);
@@ -40,6 +41,25 @@ export default function CalendarView({ currentDate, setCurrentDate, onDateClick 
   const firstDay = new Date(year, month, 1).getDay();
   const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
   const blanks = Array.from({ length: firstDay }, () => null);
+
+  if (isLoading) {
+    return (
+      <div className="w-full h-full flex flex-col bg-white animate-pulse">
+        {/* 헤더 스켈레톤 */}
+        <div className="h-12 flex justify-between items-center px-6">
+          <div className="w-10 h-4 bg-stone-100 rounded" />
+          <div className="w-20 h-6 bg-stone-100 rounded" />
+          <div className="w-10 h-4 bg-stone-100 rounded" />
+        </div>
+        {/* 달력 그리드 스켈레톤 (실제와 동일한 7열) */}
+        <div className="grid grid-cols-7 border-t border-l border-stone-100 flex-1">
+          {Array.from({ length: 35 }).map((_, i) => (
+            <div key={i} className="border-r border-b border-stone-100 h-24 bg-stone-50" />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div {...handlers} className="w-full h-full flex flex-col bg-white">
