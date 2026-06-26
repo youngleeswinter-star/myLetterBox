@@ -42,7 +42,7 @@ export default function CalendarView({ currentDate, setCurrentDate, onDateClick 
   const blanks = Array.from({ length: firstDay }, () => null);
 
   return (
-    <div {...handlers} className="w-full h-full flex flex-col bg-white">
+    <div {...handlers} className="w-full flex flex-col bg-white">
       {/* 헤더 및 통계 */}
       <div className="flex justify-between items-center px-6 py-2">
         <button onClick={prevMonth} className="text-[10px] uppercase tracking-[0.2em] text-stone-400 hover:text-stone-900 transition p-2">Prev</button>
@@ -76,9 +76,8 @@ export default function CalendarView({ currentDate, setCurrentDate, onDateClick 
           const filledCells = [...allCells, ...Array.from({ length: remainingCells }, () => null)];
 
           return filledCells.map((day, i) => {
-            // --- [3번 수정] 빈 셀에 + 버튼 호버 효과 추가 ---
             if (!day) return (
-              <div key={`empty-${i}`} className="border-r border-b border-stone-100 bg-white h-24 group relative">
+              <div key={`empty-${i}`} className="border-r border-b border-stone-100 bg-white h-28 group relative">
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                   <span className="text-stone-300 font-light text-2xl">+</span>
                 </div>
@@ -93,21 +92,17 @@ export default function CalendarView({ currentDate, setCurrentDate, onDateClick 
             return (
               <div
                 key={dateStr}
-                // --- [1번, 2번 수정] 오늘 강조(bg-stone-50) 및 호버 인터랙션(scale, shadow) 추가 ---
-                className={`border-r border-b border-stone-100 relative cursor-pointer group h-24 
+                className={`border-r border-b border-stone-100 relative cursor-pointer group h-28 
                   transition-all duration-200 hover:bg-stone-50 hover:scale-[1.02] hover:z-10 hover:shadow-lg
                   ${isToday(day) ? 'bg-stone-50' : 'bg-white'}`}
                 onClick={() => onDateClick(dateStr)}
               >
                 <div className="w-full h-full relative overflow-hidden rounded-sm">
-
-                  {/* --- [3번 수정] 포스터가 없을 때도 + 버튼 표시 --- */}
                   {!hasPoster && (
                     <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10">
                       <span className="text-stone-300 font-light text-2xl">+</span>
                     </div>
                   )}
-
                   {hasPoster && (
                     <div className="w-full h-full flex flex-col">
                       {sortedItems.slice(0, 3).map((item, idx) => (
@@ -117,44 +112,36 @@ export default function CalendarView({ currentDate, setCurrentDate, onDateClick 
                       ))}
                     </div>
                   )}
-
                   {(!hasPoster || isToday(day)) && (
                     <div className={`absolute top-1 left-1 z-30 flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[10px] font-bold rounded-full ${isToday(day) ? 'bg-stone-900 text-white' : (i % 7 === 0 ? 'text-orange-500' : i % 7 === 6 ? 'text-indigo-500' : 'text-stone-900')}`}>
                       {day}
                     </div>
                   )}
 
-                  {/* 뱃지 레이어 */}
+                  {/* 뱃지 레이어: 폰트 사이즈 줄이고 패딩 최적화 */}
                   {(log?.items?.length > 1 || (log?.items?.length === 1 && log.items[0].status === 'wish')) && (
-                    <div className="absolute bottom-1 right-1 z-20 flex flex-row-reverse gap-1 items-center">
-                      {log.items.length > 1 && log.items.filter(i => i.status === 'watched').length > 0 && (
-                        <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-stone-900 text-white text-[7px] font-bold shadow-sm">
-                          <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    <div className="absolute bottom-1 right-1 z-20 flex flex-col items-end gap-0.5">
+                      {log.items.filter(i => i.status === 'watched').length > 0 && (
+                        <div className="flex items-center gap-0.5 px-1 rounded-full bg-stone-900 text-white text-[6px] font-bold shadow-sm">
+                          <svg width="6" height="6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                           <span>{log.items.filter(i => i.status === 'watched').length}</span>
                         </div>
                       )}
                       {log.items.filter(i => i.status === 'wish').length > 0 && (
-                        <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-red-500 text-white text-[7px] font-bold shadow-sm">
-                          <svg width="7" height="7" viewBox="0 0 24 24" fill="currentColor">
-                            {/* 찜(Wish) 모양 아이콘으로 변경 (예: 북마크 형태) */}
-                            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-                          </svg>
+                        <div className="flex items-center gap-0.5 px-1 rounded-full bg-red-500 text-white text-[6px] font-bold shadow-sm">
+                          <svg width="6" height="6" viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" /></svg>
                           <span>{log.items.filter(i => i.status === 'wish').length}</span>
                         </div>
                       )}
                     </div>
                   )}
 
-                  {/* 2. 마음에 든 작품 - 하트 아이콘 레이어 (오른쪽 상단 - 포인트용) */}
-                  {/* 뱃지와 겹치지 않게 위치를 아예 다르게 잡았습니다 */}
+                  {/* 하트 아이콘: 조금 더 작게 조정 */}
                   {log?.items?.some(i => i.isHeart) && (
                     <div className="absolute top-1 right-1 z-20">
-                      <svg width="10" height="10" viewBox="0 0 24 24" fill="#F87171">
-                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                      </svg>
+                      <svg width="9" height="9" viewBox="0 0 24 24" fill="#F87171"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" /></svg>
                     </div>
                   )}
-
                 </div>
               </div>
             );

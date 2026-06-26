@@ -41,8 +41,8 @@ export default function App() {
   return (
     <LogProvider session={session}>
       <BucketProvider session={session}>
-        <div className="w-full min-h-[100dvh] bg-white flex justify-center text-gray-900 font-sans">
-          <div className="w-full max-w-md h-[100dvh] bg-white flex flex-col border-x border-gray-50 overflow-hidden">
+        <div className="fixed inset-0 w-full h-full bg-white flex justify-center text-gray-900 font-sans">
+          <div className="w-full max-w-md h-full bg-white flex flex-col border-x border-gray-50 overflow-hidden relative">
             
             {viewMode === 'list' && (
               <header className="h-16 flex items-center justify-between px-6 border-b border-gray-50 shrink-0">
@@ -54,13 +54,14 @@ export default function App() {
               </header>
             )}
 
-            <div className="flex-1 overflow-hidden flex flex-col">
+            <div className="flex-1 flex flex-col overflow-hidden">
               {viewMode === 'edit-record' ? (
                 <RecordEditor mode="record" date={selectedDate} onClose={() => setViewMode('list')} />
               ) : viewMode === 'edit-bucket' ? (
                 <RecordEditor mode="bucket" editData={editData} onClose={() => setViewMode('list')} />
               ) : (
-                <div className="flex-1 overflow-y-auto p-2">
+                // 여기가 바로 스크롤이 생기는 곳입니다. hide-scrollbar를 추가했습니다.
+                <div className="flex-1 overflow-y-auto hide-scrollbar p-2">
                   {activeTab === 'calendar' ? (
                     <CalendarView 
                       isLoading={loading}
