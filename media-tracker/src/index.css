@@ -5,6 +5,9 @@ body {
   background-color: #f8f9fa;
   color: #212529;
   -webkit-font-smoothing: antialiased;
+  /* iOS에서 확대/축소 및 튕김 방지 추가 */
+  touch-action: pan-y;
+  overscroll-behavior: none;
 }
 
 /* 화면이 부드럽게 나타나는 애니메이션 */
@@ -47,7 +50,8 @@ input[type='number'] {
   transform: scale(1.02);
   transition: transform 0.2s ease;
 }
-/* 스크롤바를 완전히 숨김 */
+
+/* 스크롤바 숨기기 및 제스처 제어 */
 ::-webkit-scrollbar {
   display: none !important;
   width: 0 !important;
@@ -57,4 +61,13 @@ input[type='number'] {
 * {
   scrollbar-width: none !important;
   -ms-overflow-style: none !important;
+  /* 여기서 확대/축소를 원천 차단합니다 */
+  touch-action: pan-y;
+}
+.hide-scrollbar {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none !important;
 }
