@@ -31,18 +31,29 @@ export default function App() {
   const [calendarDate, setCalendarDate] = useState(new Date());
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => { setSession(session); setLoading(false); });
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => { setSession(session); });
+    // 세션 로딩 및 초기화
+    supabase.auth.getSession().then(({ data: { session } }) => { 
+      setSession(session); 
+      setLoading(false); 
+    });
+    
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => { 
+      setSession(session); 
+    });
     return () => subscription.unsubscribe();
   }, []);
 
+  // 로딩 중에는 빈 화면 또는 로딩 표시
+  if (loading) return <div className="fixed inset-0 bg-white" />;
+  
+  // 로그인 안 된 경우 로그인 페이지
   if (!session) return <Login />;
 
   return (
     <LogProvider session={session}>
       <BucketProvider session={session}>
-        <div className="fixed inset-0 w-full h-full bg-white flex justify-center text-gray-900 font-sans">
-          <div className="w-full max-w-md h-full bg-white flex flex-col border-x border-gray-50 overflow-hidden relative">
+        <div className="fixed inset-0 w-full h-full bg-white flex justify-center text-gray-900 font-sans overflow-hidden">
+          <div className="w-full max-w-md h-full bg-white flex flex-col border-x border-gray-50 relative">
             
             {viewMode === 'list' && (
               <header className="h-16 flex items-center justify-between px-6 border-b border-gray-50 shrink-0">
@@ -60,7 +71,6 @@ export default function App() {
               ) : viewMode === 'edit-bucket' ? (
                 <RecordEditor mode="bucket" editData={editData} onClose={() => setViewMode('list')} />
               ) : (
-                // 여기가 바로 스크롤이 생기는 곳입니다. hide-scrollbar를 추가했습니다.
                 <div className="flex-1 overflow-y-auto hide-scrollbar p-2">
                   {activeTab === 'calendar' ? (
                     <CalendarView 
